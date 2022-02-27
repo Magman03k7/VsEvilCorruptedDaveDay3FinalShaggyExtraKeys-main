@@ -1222,10 +1222,10 @@ class Controls extends FlxActionSet
 		inline bindKeys(Control.N2, [D]);
 		inline bindKeys(Control.N3, [F]);
 		inline bindKeys(Control.N4, [FlxKey.SPACE]);
-		inline bindKeys(Control.N5, [J]);
-		inline bindKeys(Control.N6, [K]);
-		inline bindKeys(Control.N7, [L]);
-		inline bindKeys(Control.N8, [FlxKey.SEMICOLON]);
+		inline bindKeys(Control.N5, [H]);
+		inline bindKeys(Control.N6, [J]);
+		inline bindKeys(Control.N7, [K]);
+		inline bindKeys(Control.N8, [L]);
 
 		switch (scheme)
 		{
@@ -1286,10 +1286,10 @@ class Controls extends FlxActionSet
 		bindKeys(Control.N2, [D]);
 		bindKeys(Control.N3, [F]);
 		bindKeys(Control.N4, [FlxKey.SPACE]);
-		bindKeys(Control.N5, [J]);
-		bindKeys(Control.N6, [K]);
-		bindKeys(Control.N7, [L]);
-		bindKeys(Control.N8, [FlxKey.SEMICOLON]);
+		bindKeys(Control.N5, [H]);
+		bindKeys(Control.N6, [J]);
+		bindKeys(Control.N7, [K]);
+		bindKeys(Control.N8, [L]);
 		switch (scheme)
 		{
 			case Solo:
