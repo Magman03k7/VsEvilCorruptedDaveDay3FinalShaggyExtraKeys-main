@@ -56,9 +56,5 @@ class Strum extends FlxSprite
 
         offset.x -= 156 * Note.scales[PlayState.SONG.mania] / 2;
         offset.y -= 156 * Note.scales[PlayState.SONG.mania] / 2;
-        /* animation.play(anim, force);
-        updateHitbox();
-        offset.x -= 13;
-        offset.y -= 13; */
 	}
 }

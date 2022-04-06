@@ -148,7 +148,7 @@ class MainMenuState extends MusicBeatState
 
 		firstStart = false;
 
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, gameVer + " FNF - " + daRealEngineVer + " Engine", 12);
+		var versionShit:FlxText = new FlxText(5, FlxG.height - 36, 0, gameVer + " FNF - " + daRealEngineVer + " Engine\nExtra Keys Addon v1.1\n", 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
@@ -253,7 +253,7 @@ class MainMenuState extends MusicBeatState
 								case 'play':
 									FlxG.switchState(new PlayMenuState());
 								case 'dave x bambi shipping cute':
-									var poop:String = Highscore.formatSong('dave-x-bambi-shipping-cute', 1);
+									var poop:String = Highscore.formatSong('dave-x-bambi-shipping-cute', 0);
 
 									trace(poop);
 
@@ -264,6 +264,8 @@ class MainMenuState extends MusicBeatState
 									PlayState.storyDifficulty = 0;
 									PlayState.xtraSong = false;
 						
+									PlayState.formoverride = 'none';
+
 									PlayState.storyWeek = 1;
 									LoadingState.loadAndSwitchState(new PlayState());
 							}

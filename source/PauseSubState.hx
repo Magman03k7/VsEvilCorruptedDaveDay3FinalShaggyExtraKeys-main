@@ -51,16 +51,32 @@ class PauseSubState extends MusicBeatSubstate
 		levelDifficulty.updateHitbox();
 		add(levelDifficulty);
 
+
+		var modeInfo:FlxText = new FlxText(20, 15 + (CoolUtil.difficultyString() == "" ? 32 : 64), 0, "", 32);
+		modeInfo.text += "";
+		if (PlayState.botPlay)
+			modeInfo.text += "Bot Play";
+		if (PlayState.practiceMode)
+			modeInfo.text += "Practice Mode";
+		modeInfo.scrollFactor.set();
+		modeInfo.setFormat(Paths.font('vcr.ttf'), 32);
+		modeInfo.updateHitbox();
+		if (PlayState.botPlay || PlayState.practiceMode)
+			add(modeInfo);
+
 		levelDifficulty.alpha = 0;
 		levelInfo.alpha = 0;
+		modeInfo.alpha = 0;
 
 		levelInfo.x = FlxG.width - (levelInfo.width + 20);
 		levelDifficulty.x = FlxG.width - (levelDifficulty.width + 20);
+		modeInfo.x = FlxG.width - (modeInfo.width + 20);
 		// levelDifficulty.visible = false;
 
 		FlxTween.tween(bg, {alpha: 0.6}, 0.4, {ease: FlxEase.quartInOut});
 		FlxTween.tween(levelInfo, {alpha: 1, y: 20}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.3});
 		FlxTween.tween(levelDifficulty, {alpha: 1, y: levelDifficulty.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.5});
+		FlxTween.tween(modeInfo, {alpha: 1, y: modeInfo.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.7});
 
 		grpMenuShit = new FlxTypedGroup<Alphabet>();
 		add(grpMenuShit);

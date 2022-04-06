@@ -41,8 +41,7 @@ class HealthIcon extends FlxSprite
 		'bambom',
 		'ringi',
 		'bendu',
-		'dave-wheels',
-		'shaggy'
+		'dave-wheels'
 	];
 
 	public var charPublic:String = 'bf';
@@ -132,6 +131,12 @@ class HealthIcon extends FlxSprite
 			addIcon('RECOVERED_PROJECT_3', 24);
 	
 			addIcon('shaggy', 46);
+	
+			addIcon('tunnel-shaggy', 48);
+	
+			addIcon('rshaggy', 52);
+	
+			addIcon('matt', 50);
 	
 			animation.play('face');
 		}

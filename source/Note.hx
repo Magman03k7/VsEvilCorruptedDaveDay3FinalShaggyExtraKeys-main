@@ -23,14 +23,14 @@ class Note extends FlxSprite
 	public var canBeHit:Bool = false;
 	public var tooLate:Bool = false;
 	public var wasGoodHit:Bool = false;
+	public var hitByOpponent:Bool = false;
 	public var prevNote:Note;
 	public var LocalScrollSpeed:Float = 1;
+	public var localSpreadX:Float = 1;
+	public var localSpreadY:Float = 1;
 
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
-
-
-	public var noteScore:Float = 1;
 
 	public var mania:Int = 0;
 
@@ -38,7 +38,11 @@ class Note extends FlxSprite
 	public static var noteyOff2:Array<Float> = [0, 0, 0, 0, 0, 0];
 	public static var noteyOff3:Array<Float> = [0, 0, 0, 0, 0, 0];
 
+	public static var widths:Array<Float> = [160, 120, 110, 90];
 	public static var scales:Array<Float> = [0.7, 0.6, 0.55, 0.46];
+
+	public static var inEditor:Bool = false;
+	private var earlyHitMult:Float = 0.5;
 
 	public static var swagWidth:Float = 160 * 0.7;
 	public static var noteScale:Float;
@@ -61,27 +65,10 @@ class Note extends FlxSprite
 
 	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?musthit:Bool = true, noteStyle:String = "normal") //had to add a new variable to this because FNF dumb
 	{
-		swagWidth = 160 * 0.7; //factor not the same as noteScale
-		noteScale = 0.7;
-		mania = 0;
-		if (PlayState.SONG.mania == 1)
-		{
-			swagWidth = 120 * 0.7;
-			noteScale = 0.6;
-			mania = 1;
-		}
-		else if (PlayState.SONG.mania == 2)
-		{
-			swagWidth = 110 * 0.7;
-			noteScale = 0.55;
-			mania = 2;
-		}
-		else if (PlayState.SONG.mania == 3)
-		{
-			swagWidth = 90 * 0.7;
-			noteScale = 0.46;
-			mania = 3;
-		}
+		mania = PlayState.SONG.mania;
+		swagWidth = widths[mania] * 0.7; //factor not the same as noteScale
+		noteScale = scales[mania];
+
 		super();
 
 		if (prevNote == null)
@@ -234,8 +221,8 @@ class Note extends FlxSprite
 			}
 		switch (PlayState.SONG.song.toLowerCase())
 		{
-			case 'cheating' | 'unfairness' | 'applecore':
-				if (Type.getClassName(Type.getClass(FlxG.state)).contains("PlayState") && !FlxG.save.data.modchart)
+			case 'cheating' | 'unfairness':
+				if (Type.getClassName(Type.getClass(FlxG.state)).contains("PlayState") && FlxG.save.data.modchart)
 				{
 					var state:PlayState = cast(FlxG.state,PlayState);
 					InPlayState = true;
@@ -263,7 +250,7 @@ class Note extends FlxSprite
 					}
 				}
 		}
-		if (PlayState.SONG.song.toLowerCase() == 'unfairness' || PlayState.SONG.song.toLowerCase() == 'applecore')
+		if ((PlayState.SONG.song.toLowerCase() == 'unfairness' || PlayState.SONG.song.toLowerCase() == 'applecore') && FlxG.save.data.modchart)
 		{
 			var rng:FlxRandom = new FlxRandom();
 			if (rng.int(0,120) == 1)
@@ -274,34 +261,37 @@ class Note extends FlxSprite
 			{
 				LocalScrollSpeed = rng.float(1,3);
 			}
+			if (rng.int(0,120) == 1)
+			{
+				localSpreadX = rng.float(0.1,0.5);
+				localSpreadY = rng.float(0.1,0.5);
+			}
+			else if (rng.int(0,60) == 1)
+			{
+				if (rng.bool()) {
+					localSpreadX = rng.float(0.1,0.5);
+					localSpreadY = rng.float(1,3);
+				}
+				else {
+					localSpreadY = rng.float(0.1,0.5);
+					localSpreadX = rng.float(1,3);
+				}
+			}
+			else
+			{
+				localSpreadX = rng.float(1,3);
+				localSpreadY = rng.float(1,3);
+			}
 		}
 		
-
-		// trace(prevNote);
-
-		// we make sure its downscroll and its a SUSTAIN NOTE (aka a trail, not a note)
-		// and flip it so it doesn't look weird.
-		// THIS DOESN'T FUCKING FLIP THE NOTE, CONTRIBUTERS DON'T JUST COMMENT THIS OUT JESUS
-		if (FlxG.save.data.downscroll && sustainNote) 
-			flipY = true;
-
 		if (isSustainNote && prevNote != null)
 		{
-			noteScore * 0.2;
 			alpha = 0.6;
-			if (FlxG.save.data.downscroll)
-			{
-				scale.y *= -1;
-			}
+			if (FlxG.save.data.downscroll) flipY = true;
 
 			x += width / 2;
 
 			animation.play(frameN[noteData % Main.keyAmmo[mania]] + 'holdend');
-			switch (noteData)
-			{
-				case 0:
-				//nada
-			}
 
 			updateHitbox();
 
@@ -312,16 +302,13 @@ class Note extends FlxSprite
 
 			if (prevNote.isSustainNote)
 			{
-				switch (prevNote.noteData)
-				{
-					case 0:
-					//nada
-				}
 				prevNote.animation.play(frameN[prevNote.noteData] + 'hold');
 				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed * (0.7 / noteScale);
 				prevNote.updateHitbox();
 				// prevNote.setGraphicSize();
 			}
+		} else if(!isSustainNote) {
+			earlyHitMult = 1;
 		}
 	}
 
@@ -371,7 +358,7 @@ class Note extends FlxSprite
 		{
 			// The * 0.5 is so that it's easier to hit them too late, instead of too early
 			if (strumTime > Conductor.songPosition - Conductor.safeZoneOffset
-				&& strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * 0.5))
+				&& strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * earlyHitMult))
 				canBeHit = true;
 			else
 				canBeHit = false;
@@ -383,11 +370,14 @@ class Note extends FlxSprite
 		{
 			canBeHit = false;
 
-			if (strumTime <= Conductor.songPosition)
-				wasGoodHit = true;
+			if (strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * earlyHitMult))
+			{
+				if((isSustainNote && prevNote.wasGoodHit) || strumTime <= Conductor.songPosition)
+					wasGoodHit = true;
+			}
 		}
 
-		if (tooLate)
+		if (tooLate && !inEditor)
 		{
 			if (alpha > 0.3)
 				alpha = 0.3;

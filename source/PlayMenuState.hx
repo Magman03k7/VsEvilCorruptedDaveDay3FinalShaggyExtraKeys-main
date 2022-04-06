@@ -188,7 +188,7 @@ class PlayMenuState extends MusicBeatState
 		rightArrow.animation.play('idle');
 		difficultySelectors.add(rightArrow);
 
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, gameVer + " FNF - " + daRealEngineVer + " Engine", 12);
+		var versionShit:FlxText = new FlxText(5, FlxG.height - 36, 0, gameVer + " FNF - " + daRealEngineVer + " Engine\nExtra Keys Addon v1.1\n", 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
@@ -383,8 +383,8 @@ class PlayMenuState extends MusicBeatState
 				curSelected = menuItems.length - 1;
 			
 			if ((curSelected == 1 || curSelected == 4) && curDifficulty == 2) {
-				curDifficulty = 0;
-				updateDifficultySprite();
+				curDifficulty = 1;
+				changeDifficulty();
 			}
 		}
 

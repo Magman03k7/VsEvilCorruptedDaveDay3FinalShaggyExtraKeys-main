@@ -22,3 +22,6 @@ bendu
 playrobot
 playrobot-crazy
 hall-monitor
+shaggy
+rshaggy
+matt

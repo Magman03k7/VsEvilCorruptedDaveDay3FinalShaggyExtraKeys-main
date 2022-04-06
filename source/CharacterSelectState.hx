@@ -122,12 +122,22 @@ class CharacterSelectState extends MusicBeatState
 		FlxG.camera.zoom = 0.75;
 
 		//create character
-		char = new Boyfriend(FlxG.width / 2, FlxG.height / 2, "bf");
-		char.screenCenter();
-		char.y = 450;
+		if(PlayState.SONG.song.toLowerCase() == 'dave-x-bambi-shipping-cute') {
+			char = new Boyfriend(FlxG.width / 2, FlxG.height / 2, "dave-good");
+			char.screenCenter();
+			char.y = 100;
+		}
+		else {
+			char = new Boyfriend(FlxG.width / 2, FlxG.height / 2, "bf");
+			char.screenCenter();
+			char.y = 450;
+		}
 		add(char);
 		
-		characterText = new FlxText((FlxG.width / 9) - 50, (FlxG.height / 8) - 225, "Boyfriend");
+		if(PlayState.SONG.song.toLowerCase() == 'dave-x-bambi-shipping-cute')
+			characterText = new FlxText((FlxG.width / 9) - 50, (FlxG.height / 8) - 225, "Dave (Dave x Bambi)");
+		else
+			characterText = new FlxText((FlxG.width / 9) - 50, (FlxG.height / 8) - 225, "Boyfriend");
 		characterText.font = 'Comic Sans MS Bold';
 		characterText.setFormat(Paths.font("comic.ttf"), 90, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		characterText.autoSize = false;
@@ -159,7 +169,7 @@ class CharacterSelectState extends MusicBeatState
 
 		if(controls.LEFT_P && !PressedTheFunny)
 		{
-			if(!char.nativelyPlayable)
+			if(!char.nativelyPlayable && char.curCharacter != 'shaggy')
 			{
 				char.playAnim('singRIGHT', true);
 			}
@@ -171,7 +181,7 @@ class CharacterSelectState extends MusicBeatState
 		}
 		if(controls.RIGHT_P && !PressedTheFunny)
 		{
-			if(!char.nativelyPlayable)
+			if(!char.nativelyPlayable && char.curCharacter != 'shaggy')
 			{
 				char.playAnim('singLEFT', true);
 			}
@@ -205,7 +215,7 @@ class CharacterSelectState extends MusicBeatState
 			FlxG.sound.play(Paths.music('gameOverEnd'));
 			new FlxTimer().start(1.9, endIt);
 		}
-		if (FlxG.keys.justPressed.LEFT && !selectedCharacter)
+		if (FlxG.keys.justPressed.LEFT && !selectedCharacter && PlayState.SONG.song.toLowerCase() != 'dave-x-bambi-shipping-cute')
 		{
 			curForm = 0;
 			current--;
@@ -217,7 +227,7 @@ class CharacterSelectState extends MusicBeatState
 			FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 		}
 
-		if (FlxG.keys.justPressed.RIGHT && !selectedCharacter)
+		if (FlxG.keys.justPressed.RIGHT && !selectedCharacter && PlayState.SONG.song.toLowerCase() != 'dave-x-bambi-shipping-cute')
 		{
 			curForm = 0;
 			current++;
@@ -271,7 +281,7 @@ class CharacterSelectState extends MusicBeatState
 				char.y = 100 + 270;
 			case 'dave-angey' | 'dave-annoyed-3d' | 'dave-3d-standing-bruh-what':
 				char.y = 100;
-			case 'bambi-3d' | 'bambi-piss-3d' | 'bandu' | 'bandu-candy' | 'unfair-junker':
+			case 'bambi-3d' | 'bambi-piss-3d' | 'bandu'/*  | 'bandu-candy' */ | 'unfair-junker':
 				char.y = 100 + 350;
 			case 'bambi-unfair':
 				char.y = 100 + 575;
@@ -286,7 +296,8 @@ class CharacterSelectState extends MusicBeatState
 			case 'bf' | '3d-bf' | 'bf-pixel' | 'bf-christmas':
 				//dont do anything
 			case 'shaggy':
-				char.x -= 50;
+				char.y = 100;
+				char.x += 50;
 			default: char.y = 100;
 		}
 		add(char);

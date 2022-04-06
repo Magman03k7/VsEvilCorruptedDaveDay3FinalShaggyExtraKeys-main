@@ -269,6 +269,13 @@ class CreditsMenuState extends MusicBeatState
             new Social('twitter', 'https://twitter.com/villezen1')
          ]
       ),
+      //extra keys addon creator
+      new Person("Magman", CreditsType.ExtraKeysAddonCreator, "Extra Keys Charter, Coder, Shaggy Covers",
+         [
+            new Social('youtube', 'https://www.youtube.com/channel/UC1IWpXJIB0wYTCnQI0E9HMQ'), 
+            new Social('twitter', 'https://twitter.com/magar_manh')
+         ]
+      ),
    ];
 
 	override function create()
@@ -297,6 +304,7 @@ class CreditsMenuState extends MusicBeatState
       var developers:Array<Person> = new Array<Person>();
       var betaTesters:Array<Person> = new Array<Person>();
       var contributors:Array<Person> = new Array<Person>();
+      var extrakeysaddoncreator:Array<Person> = new Array<Person>();
 
       for (person in peopleInCredits) 
       {
@@ -305,13 +313,14 @@ class CreditsMenuState extends MusicBeatState
             case Dev: developers.push(person);
             case BetaTester: betaTesters.push(person);
             case Contributor: contributors.push(person);
+            case ExtraKeysAddonCreator: extrakeysaddoncreator.push(person);
          }
       }
 
       for (i in 0...peopleInCredits.length)
       {
          var currentPerson = peopleInCredits[i];
-         if (currentPerson == developers[0] || currentPerson == contributors[0] || currentPerson == betaTesters[0])
+         if (currentPerson == developers[0] || currentPerson == contributors[0] || currentPerson == betaTesters[0] || currentPerson == extrakeysaddoncreator[0])
          {
             var textString:String = '';
             switch (currentPerson.creditsType)
@@ -322,6 +331,8 @@ class CreditsMenuState extends MusicBeatState
                   textString = 'Contributors';
                case BetaTester:
                   textString = 'Beta Testers';
+               case ExtraKeysAddonCreator:
+                  textString = 'Extra Keys Addon Creator';
             }
             var titleText:FlxText = new FlxText(0, 0, 0, textString);
             titleText.setFormat("Comic Sans MS Bold", 64, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -716,7 +727,7 @@ class SocialButton
 }
 enum CreditsType
 {
-   Dev; BetaTester; Contributor;
+   Dev; BetaTester; Contributor; ExtraKeysAddonCreator;
 }
 enum State
 {

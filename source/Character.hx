@@ -360,6 +360,7 @@ class Character extends FlxSprite
 				animation.addByPrefix('singRIGHT', 'RIGHT', 24, false);
 				animation.addByPrefix('singDOWN', 'DOWN', 24, false);
 				animation.addByPrefix('singLEFT', 'LEFT', 24, false);
+				animation.addByPrefix('singFUCK', 'FUCK', 24, false);
 				animation.addByPrefix('cutscene', 'CUTSCENE', 24, false);
 		
 				addOffset('idle');
@@ -367,6 +368,7 @@ class Character extends FlxSprite
 				addOffset("singRIGHT", 10, -36);
 				addOffset("singLEFT", -90, -10);
 				addOffset("singDOWN", 80, 100);
+				addOffset("singFUCK", -218, -98);
 				addOffset("cutscene", 0, -10);
 				setGraphicSize(Std.int(width * furiosityScale),Std.int(height * furiosityScale));
 				updateHitbox();
@@ -813,25 +815,110 @@ class Character extends FlxSprite
 				nativelyPlayable = true;
 			case 'shaggy':
 				frames = Paths.getSparrowAtlas('shaggy');
-				animation.addByIndices('danceLeft', 'BF idle dance', [for (i in 0...11) i], "", 30, false);
-				animation.addByIndices('danceRight', 'BF idle dance', [for (i in 12...23) i], "", 30, false);
-				animation.addByPrefix('singUP', 'BF NOTE UP0', 30, false);
-				animation.addByPrefix('singLEFT', 'BF NOTE LEFT0', 30, false);
-				animation.addByPrefix('singRIGHT', 'BF NOTE RIGHT0', 30, false);
-				animation.addByPrefix('singDOWN', 'BF NOTE DOWN0', 30, false);
+				animation.addByPrefix('danceRight', 'shaggy_idle0', 30, false);
+				animation.addByPrefix('danceLeft', 'shaggy_idle2', 30, false);
+				animation.addByPrefix('singUP', 'shaggy_up', 30, false);
+				animation.addByPrefix('singLEFT', 'shaggy_right', 30, false);
+				animation.addByPrefix('singRIGHT', 'shaggy_left', 30, false);
+				animation.addByPrefix('singDOWN', 'shaggy_down', 30, false);
 
-				addOffset('danceLeft', -5);
-				addOffset('danceRight', -5);
-				addOffset("singUP", -29, 27);
-				addOffset("singRIGHT", -38, -7);
-				addOffset("singLEFT", 12, -6);
-				addOffset("singDOWN", -10, -50);
+				addOffset('danceRight');
+				addOffset('danceLeft', -28);
+				addOffset("singUP", -39, 27);
+				addOffset("singRIGHT", -55, -114);
+				addOffset("singLEFT", 133, -38);
+				addOffset("singDOWN", 83, -160);
 
-				playAnim('danceLeft');
+				playAnim('danceRight');
 
 				nativelyPlayable = true;
+			case 'tunnel-shaggy':
+				frames = Paths.getSparrowAtlas('tunnel_shaggy');
+				animation.addByPrefix('idle', 'pshaggy_idle', 30, false);
+				animation.addByPrefix('singUP', 'pshaggy_up0', 30, false);
+				animation.addByPrefix('singLEFT', 'pshaggy_left', 30, false);
+				animation.addByPrefix('singRIGHT', 'pshaggy_right', 30, false);
+				animation.addByPrefix('singDOWN', 'pshaggy_down', 30, false);
+
+				addOffset('idle');
+				addOffset("singUP", 114, 97);
+				addOffset("singRIGHT", 119, -8);
+				addOffset("singLEFT", 35, 16);
+				addOffset("singDOWN", 200, -110);
+
+				playAnim('idle');
 
 				flipX = true;
+
+				nativelyPlayable = true;
+			case 'rshaggy':
+				frames = Paths.getSparrowAtlas('shaggy_red');
+				animation.addByPrefix('danceRight', 'shaggy_idle0', 30, false);
+				animation.addByPrefix('danceLeft', 'shaggy_idle2', 30, false);
+				animation.addByPrefix('singUP', 'shaggy_up', 30, false);
+				animation.addByPrefix('singLEFT', 'shaggy_left', 30, false);
+				animation.addByPrefix('singRIGHT', 'shaggy_right', 30, false);
+				animation.addByPrefix('singDOWN', 'shaggy_down', 30, false);
+
+				addOffset('danceRight');
+				addOffset('danceLeft', -1);
+				addOffset("singUP", -16, 27);
+				addOffset("singLEFT", 165, -114);
+				addOffset("singRIGHT", -1, -43);
+				addOffset("singDOWN", -10, -160);
+
+				playAnim('danceRight');
+			case 'matt':
+				frames = Paths.getSparrowAtlas('matt');
+				animation.addByPrefix('idle', "matt idle", 24, false);
+				animation.addByPrefix('singUP', "matt up note", 24, false);
+				animation.addByPrefix('singDOWN', "matt down note", 24, false);
+				animation.addByPrefix('singLEFT', 'matt left note', 24, false);
+				animation.addByPrefix('singRIGHT', 'matt right note', 24, false);
+
+				animation.addByPrefix('singUPmiss', "miss up", 24, false);
+				animation.addByPrefix('singDOWNmiss', "miss down", 24, false);
+				animation.addByPrefix('singLEFTmiss', 'miss left', 24, false);
+				animation.addByPrefix('singRIGHTmiss', 'miss right', 24, false);
+
+				addOffset('idle', 0, 70);
+
+				addOffset("singUP", -5, 80);
+				addOffset("singRIGHT", -47, 18);
+				addOffset("singLEFT", 180, 19);
+				addOffset("singDOWN", 64, -20);
+
+				if (isPlayer)
+				{
+					addOffset("singUP", 15, 80);
+					addOffset("singLEFT", 139, 21);
+					addOffset("singRIGHT", -52, 27);
+					addOffset("singDOWN", 87, -16);
+				}
+				addOffset("singUPmiss", 8, 80);
+				addOffset("singLEFTmiss", 153, 26);
+				addOffset("singRIGHTmiss", -23, 23);
+				addOffset("singDOWNmiss", 75, -14);
+
+				playAnim('idle');
+
+				nativelyPlayable = true;
+			case 'matt-lost':
+				frames = Paths.getSparrowAtlas('matt_lost');
+				animation.addByPrefix('idle', "matt lose retry", 24, false);
+				animation.addByPrefix('firstDeath', "matt lose prev", 30, false);
+				animation.addByPrefix('deathLoop', "matt lose idle", 24, true);
+				animation.addByPrefix('deathConfirm', "matt lose retry", 24, false);
+
+				addOffset('firstDeath', 20, 0 /*literally penis*/);
+				addOffset('deathLoop', -4, 10 - 20);
+				addOffset('deathConfirm', 30 - 4, 20 - 20);
+				playAnim('firstDeath');
+				// pixel bullshit
+				//setGraphicSize(Std.int(width * 6));
+				updateHitbox();
+				antialiasing = true;
+				//flipX = true;	
 		}
 		dance();
 
@@ -895,7 +982,7 @@ class Character extends FlxSprite
 			var poopInPants:String = alt ? '-alt' : '';
 			switch (curCharacter)
 			{
-				case 'gf' | 'gf-christmas' | 'gf-pixel' | 'bandu-candy' | 'bambi-piss-3d' | 'gf-only' | 'dave-wheels' | 'shaggy':
+				case 'gf' | 'gf-christmas' | 'gf-pixel' | 'bandu-candy' | 'bambi-piss-3d' | 'gf-only' | 'dave-wheels' | 'shaggy' | 'rshaggy':
 					if (!animation.curAnim.name.startsWith('hair'))
 					{
 						danced = !danced;
@@ -928,7 +1015,8 @@ class Character extends FlxSprite
 		var daOffset = animOffsets.get(AnimName);
 		if (animOffsets.exists(AnimName))
 		{
-			if (isPlayer)
+			if (curCharacter == 'shaggy' || curCharacter == 'matt' || curCharacter == 'matt-lost') offset.set(daOffset[0], daOffset[1]);
+			else if (isPlayer)
 			{
 				if(!nativelyPlayable)
 				{

@@ -5,6 +5,7 @@ import flixel.tweens.FlxEase;
 import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.group.FlxGroup;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
@@ -26,6 +27,12 @@ class ExtraSongState extends MusicBeatState
 
     var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('backgrounds/SUSSUS AMOGUS'));
     var curSelected:Int = 0;
+	var curDifficulty:Int = 0;
+	var difficultySelectors:FlxGroup;
+	var diffText:FlxText;
+	
+	private var maniaSong:Bool;
+	private var noexforyou:Bool;
 
     private var iconArray:Array<HealthIcon> = [];
 
@@ -56,9 +63,10 @@ class ExtraSongState extends MusicBeatState
 		bg.color = 0xFF4965FF;
 		add(bg);
         
-		addWeek(['Sugar-Rush', 'Origin', 'Metallic', 'Strawberry', 'Keyboard', 'Cycles'], 2, ['bandu-candy', 'bandu-origin', 'ringi', 'bambom', 'bendu', 'sart-producer']);
+		addWeek(['Sugar-Rush', 'Origin', 'Metallic', 'Strawberry', 'Keyboard', 'Ugh', 'Cycles'], 2, ['bandu-candy', 'bandu-origin', 'ringi', 'bambom', 'bendu', 'bandu-origin', 'sart-producer']);
         addWeek(['Thunderstorm', 'Wheels', 'Dave-x-Bambi-Shipping-Cute', 'RECOVERED-PROJECT'], 1, ['dave-png', 'dave-wheels', 'dave-good', 'RECOVERED_PROJECT']);
 		addWeek(['Sart-Producer'], 4, ['sart-producer']);
+		addWeek(['Old-Strawberry'], 2, ['bambom']);
 
         grpSongs = new FlxTypedGroup<Alphabet>();
 		add(grpSongs);
@@ -86,7 +94,19 @@ class ExtraSongState extends MusicBeatState
 			add(icon);
 		}
 
+		difficultySelectors = new FlxGroup();
+		add(difficultySelectors);
+
+		var scoreBG:FlxSprite = new FlxSprite(FlxG.width * 0.8 - 6, 0).makeGraphic(Std.int(FlxG.width * 0.35), 42, 0xFF000000);
+		scoreBG.alpha = 0.6;
+		difficultySelectors.add(scoreBG);
+
+		diffText = new FlxText(FlxG.width * 0.8, 5, 0, "", 24);
+		diffText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
+		difficultySelectors.add(diffText);
+
 		changeSelection();
+		changeDiff();
 
         super.create();
     }
@@ -116,6 +136,15 @@ class ExtraSongState extends MusicBeatState
 
     override function update(p:Float)
 	{
+		maniaSong = curSelected == 0 || curSelected == 7 || curSelected == 8;
+		noexforyou = curSelected == 5 || curSelected == 6;
+		difficultySelectors.visible = !noexforyou;
+
+		if (!maniaSong && curDifficulty == 2) {
+			curDifficulty = 1;
+			updateDifficultyText();
+		}
+
 		if (FlxG.sound.music.volume < 0.7)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
@@ -129,7 +158,14 @@ class ExtraSongState extends MusicBeatState
         if (controls.DOWN_P)
             changeSelection(1);
 
-        if (controls.BACK)
+		if (!noexforyou) {
+			if (controls.RIGHT_P)
+				changeDiff(1);
+			if (controls.LEFT_P)
+				changeDiff(-1);
+		}
+
+		if (controls.BACK)
             FlxG.switchState(new PlayMenuState());
 
         if (controls.ACCEPT)
@@ -137,20 +173,25 @@ class ExtraSongState extends MusicBeatState
             switch (songs[curSelected].songName.toLowerCase()) {
                 case 'unknown':
                     FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-                default:   
-                    var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), 0);
+                default:
+					if (noexforyou) curDifficulty = 0;
+                    var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
 
                     trace(poop);
 
                     PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
                     PlayState.isStoryMode = false;
-                    PlayState.storyDifficulty = 0;
+                    PlayState.storyDifficulty = curDifficulty;
                     PlayState.xtraSong = true;
 
 					PlayState.formoverride = 'none';
 
                     PlayState.storyWeek = songs[curSelected].week;
 					if(songs[curSelected].songName.toLowerCase() == 'cycles')
+					{
+						LoadingState.loadAndSwitchState(new PlayState());
+					}
+					else if(songs[curSelected].songName.toLowerCase() == 'dave-x-bambi-shipping-cute' && curDifficulty == 1)
 					{
 						LoadingState.loadAndSwitchState(new PlayState());
 					}
@@ -162,9 +203,42 @@ class ExtraSongState extends MusicBeatState
 		}
     }
 
-    function changeSelection(change:Int = 0)
+	function changeDiff(change:Int = 0)
+	{
+		curDifficulty += change;
+		if (maniaSong) {
+			if (curDifficulty < 0)
+				curDifficulty = 2;
+			if (curDifficulty > 2)
+				curDifficulty = 0;
+		}
+		else {
+			if (curDifficulty < 0)
+				curDifficulty = 1;
+			if (curDifficulty > 1)
+				curDifficulty = 0;
+		}
+
+		updateDifficultyText();
+	}
+
+	function updateDifficultyText()
+	{
+		switch (curDifficulty)
+		{
+			case 0:
+				diffText.text = 'HARD';
+			case 1:
+				diffText.text = 'EXTRA KEYS';
+			case 2:
+				diffText.text = '4K MANIA';
+		}
+	}
+
+	function changeSelection(change:Int = 0)
 	{
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+		changeDiff();
 		curSelected += change;
 
 		if (curSelected < 0)
@@ -175,7 +249,7 @@ class ExtraSongState extends MusicBeatState
 
         switch(songs[curSelected].songName.toLowerCase()) {
             case 'unknown':
-                swagText.text = 'A secret is required to unlock this song!';
+                swagText.text = 'A secret is required to\nunlock this song!';
                 swagText.visible = true;
             default:
                 swagText.visible = false;

@@ -18,8 +18,8 @@
 		var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
 		var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
 		public static var keyAmmo:Array<Int> = [4, 6, 7, 9];
+		public static var dataJump:Array<Int> = [8, 12, 14, 18];
 		public static var shaggyVoice:Bool = false;
-		public static var debugOpponentSide:Bool = false;
 
 		// You can pretty much ignore everything from here on - your code should go in your states.
 

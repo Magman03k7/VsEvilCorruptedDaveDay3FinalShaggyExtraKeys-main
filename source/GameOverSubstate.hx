@@ -11,6 +11,7 @@ import flixel.util.FlxTimer;
 class GameOverSubstate extends MusicBeatSubstate
 {
 	var bf:Boyfriend;
+	var matt:Boyfriend;
 	var camFollow:FlxObject;
 
 	var stageSuffix:String = "";
@@ -18,6 +19,7 @@ class GameOverSubstate extends MusicBeatSubstate
 	public function new(x:Float, y:Float,char:String)
 	{
 		var daStage = PlayState.curStage;
+		var daMatt:Bool = PlayState.bfChar == "matt";
 		var daBf:String = '';
 		switch (char)
 		{
@@ -46,14 +48,25 @@ class GameOverSubstate extends MusicBeatSubstate
 		bf = new Boyfriend(x, y, char);
 		if(bf.animation.getByName('firstDeath') == null)
 		{
-			bf = new Boyfriend(x, y, "bf");
+			bf = new Boyfriend(x, y, 'bf');
 		}
 		add(bf);
+
+		if (char == 'matt')
+		{
+			matt = new Boyfriend(x, y, 'matt-lost');
+			add(matt);
+			bf.alpha = 0;
+			FlxG.sound.play(Paths.sound('fnf_loss_sfx-matt'));
+		}
+		else
+		{
+			FlxG.sound.play(Paths.sound('fnf_loss_sfx' + stageSuffix));
+		}
 
 		camFollow = new FlxObject(bf.getGraphicMidpoint().x, bf.getGraphicMidpoint().y, 1, 1);
 		add(camFollow);
 
-		FlxG.sound.play(Paths.sound('fnf_loss_sfx' + stageSuffix));
 		Conductor.changeBPM(100);
 
 		// FlxG.camera.followLerp = 1;
@@ -62,6 +75,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		FlxG.camera.target = null;
 
 		bf.playAnim('firstDeath');
+		if (char == 'matt') matt.playAnim('firstDeath');
 	}
 
 	override function update(elapsed:Float)
@@ -84,7 +98,7 @@ class GameOverSubstate extends MusicBeatSubstate
 
 				FlxG.save.data.foundRecoveredProject = true;
 
-				var poop:String = Highscore.formatSong('recovered-project', 1);
+				var poop:String = Highscore.formatSong('recovered-project', 0);
 
 				trace(poop);
 
@@ -131,6 +145,7 @@ class GameOverSubstate extends MusicBeatSubstate
 			isEnding = true;
 			
 				bf.playAnim('deathConfirm', true);
+				if (bf.alpha == 0) matt.playAnim('deathConfirm', true);
 				FlxG.sound.music.stop();
 				FlxG.sound.play(Paths.music('gameOverEnd' + stageSuffix));
 				new FlxTimer().start(0.7, function(tmr:FlxTimer)
